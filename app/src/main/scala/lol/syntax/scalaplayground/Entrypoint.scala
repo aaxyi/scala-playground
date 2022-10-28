@@ -2,7 +2,6 @@ package lol.syntax.scalaplayground
 
 import lol.syntax.scalaplayground.Or.Both
 
-import scala.::
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Future
@@ -105,6 +104,15 @@ def foldLeft[A, B](data: List[A], init: B)(f: (B, A) => B): B =
 @main
 def entrypoint(): Unit =
     // reimplementation of some of above function using `foldLeft`
-    def sum(data: List[Int]): Int                          = foldLeft(data, 0)(_ + _)
-    def product(data: List[Int]): Int                      = foldLeft(data, 1)(_ * _)
+    def sum(data: List[Int]): Int     = foldLeft(data, 0)(_ + _)
+    def product(data: List[Int]): Int = foldLeft(data, 1)(_ * _)
+    def min(data: List[Int]): Option[Int] = foldLeft(data, Option.empty[Int]) { (acc, current) =>
+        acc map (math.min(_, current)) orElse Some(current)
+    }
+    def map[A, B](data: List[A])(f: A => B): List[B] = foldLeft(data, List.empty[B]) {
+        (acc, current) => f(current) :: acc
+    }
+    def reverse[A](data: List[A]): List[A] = foldLeft(data, List.empty[A]) { (acc, current) =>
+        current :: acc
+    }
     def forall[A](data: List[A])(f: A => Boolean): Boolean = foldLeft(data, true)(_ && f(_))
